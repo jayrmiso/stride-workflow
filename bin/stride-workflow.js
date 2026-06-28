@@ -41,28 +41,28 @@ const requiredPaths = [
 ];
 
 function usage() {
-  return `stride
+  return `stride-workflow
 
 Usage:
-  stride init [path] [--force] [--no-codex]
-  stride command <touch|frame|carry|land|kit|review|mend|status>
-  stride <touch|frame|carry|land|kit|review|mend|status>
-  stride status [path]
-  stride doctor [path]
-  stride version
-  stride --help
+  stride-workflow init [path] [--force] [--no-codex]
+  stride-workflow command <touch|frame|carry|land|kit|review|mend|status>
+  stride-workflow <touch|frame|carry|land|kit|review|mend|status>
+  stride-workflow status [path]
+  stride-workflow doctor [path]
+  stride-workflow version
+  stride-workflow --help
 
 Commands:
   init     Install .stride workflow files into a project.
-  command  Print the instructions for one Stride command.
-  doctor   Check whether a project has the expected Stride files.
+  command  Print the instructions for one Stride Workflow command.
+  doctor   Check whether a project has the expected Stride Workflow files.
   status   Show the current handoff, frame, and ledger for a project.
-  version  Print the Stride CLI version.
+  version  Print the Stride Workflow CLI version.
 `;
 }
 
 function fail(message) {
-  console.error(`stride: ${message}`);
+  console.error(`stride-workflow: ${message}`);
   process.exit(1);
 }
 
@@ -94,9 +94,9 @@ function copyDir(src, dest, options) {
 
 function writeCodexBridge(projectDir, force) {
   const target = path.join(projectDir, "AGENTS.md");
-  const body = `# Stride
+  const body = `# Stride Workflow
 
-This repo uses Stride, an adaptive-depth workflow for Codex.
+This repo uses Stride Workflow, an adaptive-depth workflow for Codex.
 
 Before substantial work:
 
@@ -142,7 +142,7 @@ function initProject(args) {
   }
 
   console.log("");
-  console.log(`Stride initialized in ${projectDir}`);
+  console.log(`Stride Workflow initialized in ${projectDir}`);
 }
 
 function printCommand(args) {
@@ -167,7 +167,7 @@ function showStatus(args) {
   const frame = path.join(projectDir, ".stride", "frames", "current.md");
 
   if (!fs.existsSync(ledger)) {
-    fail(`no Stride ledger found at ${ledger}. Run "stride init" first.`);
+    fail(`no Stride Workflow ledger found at ${ledger}. Run "stride-workflow init" first.`);
   }
 
   if (fs.existsSync(run)) {
@@ -190,11 +190,11 @@ function doctor(args) {
   });
 
   if (missing.length === 0) {
-    console.log(`Stride looks ready in ${projectDir}`);
+    console.log(`Stride Workflow looks ready in ${projectDir}`);
     return;
   }
 
-  console.log(`Stride is incomplete in ${projectDir}`);
+  console.log(`Stride Workflow is incomplete in ${projectDir}`);
   console.log("");
   for (const missingPath of missing) {
     console.log(`missing ${missingPath}`);

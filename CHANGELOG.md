@@ -1,14 +1,30 @@
 # Changelog
 
-All notable Stride changes are documented here.
+All notable Stride Workflow changes are documented here.
 
-Stride uses GitHub releases for every published update. Each release should have:
+Stride Workflow uses GitHub releases for every published update. Each release should have:
 
 - a version tag
 - release notes
 - changelog entry
 - install command
 - upgrade notes when behavior changes
+
+## [0.1.2] - 2026-06-28
+
+Naming release.
+
+### Changed
+
+- Renamed the official project/package language to `stride-workflow` / Stride Workflow.
+- Renamed the CLI binary from `stride` to `stride-workflow`.
+- Kept Codex chat commands as `$stride ...`.
+- Updated install commands and repository metadata for `github:jayrmiso/stride-workflow`.
+
+### Added
+
+- Added GitHub Actions validation for CLI syntax, smoke tests, package dry run, and install doctor.
+- Added a manual publish workflow that tags and creates GitHub releases from `CHANGELOG.md`.
 
 ## [0.1.1] - 2026-06-28
 
@@ -23,7 +39,7 @@ Documentation release.
 
 ## [0.1.0] - 2026-06-28
 
-First public Stride release.
+First public Stride Workflow release.
 
 ### Added
 
@@ -33,7 +49,7 @@ First public Stride release.
 - Added `$stride kit ui` for frontend consistency, screenshot-inspired UI work, reusable components, tokens, and careful migration.
 - Added worktree, previewer, and handoff phases so manual testing happens from the right checkout with a clear checklist.
 - Added `AGENTS.md` generation as the Codex bridge.
-- Added README documentation and the Stride workflow diagram.
+- Added README documentation and the Stride Workflow diagram.
 
 ### Current Boundary
 

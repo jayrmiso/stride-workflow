@@ -1,0 +1,66 @@
+name: publish
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate package
+        run: |
+          npm run check
+          npm run smoke
+          npm pack --dry-run
+
+      - id: version
+        name: Read package version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog section
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { in_section=1; next }
+            /^## \[/ && in_section { exit }
+            in_section { print }
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+
+      - name: Tag version if needed
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "v$version already exists"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$version" -m "Stride Workflow v$version"
+          git push origin "v$version"
+
+      - name: Create GitHub release if needed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          if gh release view "v$version" >/dev/null 2>&1; then
+            echo "Release v$version already exists"
+            exit 0
+          fi
+          gh release create "v$version" \
+            --title "Stride Workflow v$version" \
+            --notes-file release-notes.md
+

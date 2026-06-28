@@ -1,45 +1,45 @@
-# Stride
+# Stride Workflow
 
-Stride is a Codex-first workflow CLI for installing a repo-local development system. It gives Codex a small set of project commands, durable workflow files, and a manual-test handoff so work happens in the right checkout and ends in a clear state.
+Stride Workflow is a Codex-first workflow CLI for installing a repo-local development system. It gives Codex a small set of project commands, durable workflow files, and a manual-test handoff so work happens in the right checkout and ends in a clear state.
 
-![Stride workflow diagram](docs/stride-flow.svg)
+![Stride Workflow diagram](docs/stride-flow.svg)
 
-## Why Stride Exists
+## Why Stride Workflow Exists
 
-Large agent workflows can be powerful, but they can also spend too much context on ceremony. Stride keeps the useful parts: shape the work, isolate it, implement it, check it, preview it, let the human judge it, then land it.
+Large agent workflows can be powerful, but they can also spend too much context on ceremony. Stride Workflow keeps the useful parts: shape the work, isolate it, implement it, check it, preview it, let the human judge it, then land it.
 
-Stride is built around a simple idea:
+Stride Workflow is built around a simple idea:
 
 ```text
 frame the work -> carry it safely -> manually test -> land it
 ```
 
-For tiny edits, Stride skips the full frame and uses `touch`.
+For tiny edits, Stride Workflow skips the full frame and uses `touch`.
 
 ## Install
 
-Install Stride into the current project from GitHub:
+Install Stride Workflow into the current project from GitHub:
 
 ```bash
-npx github:jayrmiso/stride init
+npx github:jayrmiso/stride-workflow init
 ```
 
 Install into a specific project:
 
 ```bash
-npx github:jayrmiso/stride init /path/to/project
+npx github:jayrmiso/stride-workflow init /path/to/project
 ```
 
 Verify the install:
 
 ```bash
-npx github:jayrmiso/stride doctor /path/to/project
+npx github:jayrmiso/stride-workflow doctor /path/to/project
 ```
 
 From a local checkout:
 
 ```bash
-node bin/stride.js init /path/to/project
+node bin/stride-workflow.js init /path/to/project
 ```
 
 ## What Gets Installed
@@ -169,12 +169,12 @@ worktree
 CLI commands:
 
 ```bash
-stride init [path] [--force] [--no-codex]
-stride command <touch|frame|carry|land|kit|review|mend|status>
-stride <touch|frame|carry|land|kit|review|mend|status>
-stride status [path]
-stride doctor [path]
-stride version
+stride-workflow init [path] [--force] [--no-codex]
+stride-workflow command <touch|frame|carry|land|kit|review|mend|status>
+stride-workflow <touch|frame|carry|land|kit|review|mend|status>
+stride-workflow status [path]
+stride-workflow doctor [path]
+stride-workflow version
 ```
 
 Codex chat commands:
@@ -190,11 +190,11 @@ $stride mend <issue>
 $stride status
 ```
 
-`stride command carry` and `stride carry` both print the workflow instructions for that command. The implementation work happens in Codex after the user invokes the matching `$stride ...` command in chat.
+`stride-workflow command carry` and `stride-workflow carry` both print the workflow instructions for that command. The implementation work happens in Codex after the user invokes the matching `$stride ...` command in chat.
 
 ## Status And Manual Testing
 
-After `carry`, Stride should leave you with a manual-test card:
+After `carry`, Stride Workflow should leave you with a manual-test card:
 
 ```text
 Status: Ready for manual test
@@ -220,12 +220,12 @@ Next:
 If you forget the URL or what changed:
 
 ```bash
-stride status
+stride-workflow status
 ```
 
 ## Current Boundary
 
-`v0.1.0` is an instruction-driven Stride release. It installs the workflow files, Codex bridge, command docs, and phase docs.
+`v0.1.2` is an instruction-driven Stride Workflow release. It installs the workflow files, Codex bridge, command docs, and phase docs.
 
 The next major step is making the CLI execute more of the workflow directly: create worktrees, start previews, create PRs, and clean up after landing.
 

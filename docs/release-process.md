@@ -26,7 +26,7 @@ npm pack --dry-run
 5. Tag the version:
 
 ```bash
-git tag -a vX.Y.Z -m "Stride vX.Y.Z"
+git tag -a vX.Y.Z -m "Stride Workflow vX.Y.Z"
 ```
 
 6. Push branch and tag:
@@ -39,7 +39,7 @@ git push origin vX.Y.Z
 7. Create the GitHub release from the changelog notes:
 
 ```bash
-gh release create vX.Y.Z --title "Stride vX.Y.Z" --notes-file /tmp/stride-release-notes.md
+gh release create vX.Y.Z --title "Stride Workflow vX.Y.Z" --notes-file /tmp/stride-release-notes.md
 ```
 
 ## Release Notes Shape
@@ -52,11 +52,10 @@ gh release create vX.Y.Z --title "Stride vX.Y.Z" --notes-file /tmp/stride-releas
 ## Install
 
 ```bash
-npx github:jayrmiso/stride init
+npx github:jayrmiso/stride-workflow init
 ```
 
 ## Notes
 
 - ...
 ```
-

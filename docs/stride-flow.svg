@@ -1,6 +1,6 @@
 <svg width="1120" height="650" viewBox="0 0 1120 650" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Stride workflow flow diagram</title>
-  <desc id="desc">Stride starts with touch for tiny changes or frame for larger work, then carries changes through worktree implementation, checks, preview, manual testing, mend if needed, and land when approved.</desc>
+  <title id="title">Stride Workflow flow diagram</title>
+  <desc id="desc">Stride Workflow starts with touch for tiny changes or frame for larger work, then carries changes through worktree implementation, checks, preview, manual testing, mend if needed, and land when approved.</desc>
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#14213D" flood-opacity="0.12"/>
@@ -14,7 +14,7 @@
   <path d="M0 104C155 56 308 54 459 104C620 157 775 157 925 101C1000 73 1065 64 1120 73V0H0V104Z" fill="#E8F0EA"/>
   <path d="M0 556C126 592 270 592 431 556C618 514 795 521 963 576C1020 595 1073 604 1120 603V650H0V556Z" fill="#EAF0F7"/>
 
-  <text x="64" y="74" fill="#17212B" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="36" font-weight="800">Stride</text>
+  <text x="64" y="74" fill="#17212B" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="36" font-weight="800">Stride Workflow</text>
   <text x="64" y="108" fill="#516173" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="17">Frame the work, carry it in an isolated checkout, preview the right app, then land only after manual approval.</text>
 
   <g filter="url(#shadow)">

@@ -1,8 +1,8 @@
 # Codex Workflow Concept
 
-Name: `stride`
+Name: Stride Workflow
 
-`stride` is a Codex-first workflow system for people who want real progress in a repo without turning every task into a heavyweight committee. It is inspired by structured agent workflows, but its core idea is different: the assistant should adapt its depth to the task instead of always running the same ritual.
+Stride Workflow is a Codex-first workflow system for people who want real progress in a repo without turning every task into a heavyweight committee. It is inspired by structured agent workflows, but its core idea is different: the assistant should adapt its depth to the task instead of always running the same ritual.
 
 ## Product Philosophy
 
@@ -91,7 +91,7 @@ High-risk examples:
 
 The assistant implements the smallest coherent unit of approved progress.
 
-It should create or reuse the active Stride worktree, avoid splitting work into artificial subagents unless the task truly benefits from parallel exploration, and end with a manual-test handoff.
+It should create or reuse the active Stride Workflow worktree, avoid splitting work into artificial subagents unless the task truly benefits from parallel exploration, and end with a manual-test handoff.
 
 ### Check
 
@@ -117,7 +117,7 @@ The ledger is designed to survive context resets.
 
 ### Preview And Handoff
 
-For user-facing work, Stride starts the app from the active worktree and gives the user the correct URL for manual testing.
+For user-facing work, Stride Workflow starts the app from the active worktree and gives the user the correct URL for manual testing.
 
 The handoff card records:
 
@@ -130,7 +130,7 @@ The handoff card records:
 
 ## Commands
 
-`stride` uses user commands backed by internal phases.
+Stride Workflow uses user commands backed by internal phases.
 
 ### `$stride frame`
 
@@ -214,7 +214,7 @@ For reading the current ledger and active frame.
 
 ## Token Strategy
 
-`stride` should be token-aware without being timid.
+Stride Workflow should be token-aware without being timid.
 
 Rules:
 
@@ -229,7 +229,7 @@ This keeps the main functionality: structured planning, real implementation, ver
 
 ## What Makes This Original
 
-`stride` is not built around named agents. It is built around adaptive depth.
+Stride Workflow is not built around named agents. It is built around adaptive depth.
 
 The unit of work is not "send this to planner, engineer, reviewer." The unit of work is "how much certainty does this task need before we move?"
 
