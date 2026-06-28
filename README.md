@@ -4,7 +4,7 @@ Stride Workflow is a Codex-first workflow tool for keeping repo work framed, iso
 
 ![Stride Workflow diagram](docs/stride-flow.svg)
 
-For the technical workflow, commands, phases, install details, and release process, see [docs/technical-overview.md](docs/technical-overview.md).
+For the technical workflow, commands, phases, and install details, see [docs/technical-overview.md](docs/technical-overview.md).
 
 ## Install
 

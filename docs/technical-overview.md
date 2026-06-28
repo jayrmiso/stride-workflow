@@ -90,19 +90,6 @@ AGENTS.md
 
 `AGENTS.md` tells Codex to route `$stride ...` chat commands through the `.stride/` files.
 
-## Release Workflow
-
-Every release should have:
-
-- a version bump
-- a changelog entry
-- release notes
-- a Git tag
-- a GitHub release
-
-See [docs/release-process.md](docs/release-process.md).
-
 ## Diagram
 
 ![Stride Workflow diagram](stride-flow.svg)
-
