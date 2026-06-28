@@ -10,56 +10,20 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
-## [0.1.3] - 2026-06-28
-
-Documentation split release.
-
-### Changed
-
-- Shortened the README so it focuses on what Stride Workflow is and why it exists.
-- Moved technical workflow details into `docs/technical-overview.md`.
-- Removed the older `docs/concept.md` scratch/technical page to avoid duplication.
-
-## [0.1.2] - 2026-06-28
-
-Naming release.
-
-### Changed
-
-- Renamed the official project/package language to `stride-workflow` / Stride Workflow.
-- Renamed the CLI binary from `stride` to `stride-workflow`.
-- Kept Codex chat commands as `$stride ...`.
-- Updated install commands and repository metadata for `github:jayrmiso/stride-workflow`.
-
-### Added
-
-- Added GitHub Actions validation for CLI syntax, smoke tests, package dry run, and install doctor.
-- Added a manual publish workflow that tags and creates GitHub releases from `CHANGELOG.md`.
-
-## [0.1.1] - 2026-06-28
-
-Documentation release.
-
-### Added
-
-- Added a proper project README with workflow examples, install instructions, command overview, and manual-test handoff explanation.
-- Added `docs/stride-flow.svg` as the README flow diagram.
-- Added `CHANGELOG.md`.
-- Added `docs/release-process.md` to require release notes and changelog updates for future published changes.
-
 ## [0.1.0] - 2026-06-28
 
-First public Stride Workflow release.
+Initial release.
 
 ### Added
 
-- Added the `stride` CLI with `init`, `doctor`, `status`, `version`, and command instruction output.
+- Added the `stride-workflow` CLI with `init`, `doctor`, `status`, `version`, and command instruction output.
 - Added the Codex-first `.stride/` workflow installer.
 - Added core chat commands: `$stride touch`, `$stride frame`, `$stride carry`, `$stride land`, `$stride review`, `$stride mend`, and `$stride status`.
 - Added `$stride kit ui` for frontend consistency, screenshot-inspired UI work, reusable components, tokens, and careful migration.
 - Added worktree, previewer, and handoff phases so manual testing happens from the right checkout with a clear checklist.
 - Added `AGENTS.md` generation as the Codex bridge.
 - Added README documentation and the Stride Workflow diagram.
+- Added a technical overview doc and a release process doc.
 
 ### Current Boundary
 

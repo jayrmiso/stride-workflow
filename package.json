@@ -1,6 +1,6 @@
 {
   "name": "stride-workflow",
-  "version": "0.1.3",
+  "version": "0.1.0",
   "description": "Frame-and-carry workflow scaffolding for Codex-first repo work.",
   "type": "module",
   "bin": {
