@@ -10,6 +10,17 @@ Stride uses GitHub releases for every published update. Each release should have
 - install command
 - upgrade notes when behavior changes
 
+## [0.1.1] - 2026-06-28
+
+Documentation release.
+
+### Added
+
+- Added a proper project README with workflow examples, install instructions, command overview, and manual-test handoff explanation.
+- Added `docs/stride-flow.svg` as the README flow diagram.
+- Added `CHANGELOG.md`.
+- Added `docs/release-process.md` to require release notes and changelog updates for future published changes.
+
 ## [0.1.0] - 2026-06-28
 
 First public Stride release.
@@ -28,4 +39,3 @@ First public Stride release.
 
 - This version is instruction-driven. It installs workflow files and command docs for Codex.
 - Future versions can make worktree creation, preview startup, PR creation, and cleanup executable from the CLI.
-
