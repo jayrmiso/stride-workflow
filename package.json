@@ -1,0 +1,32 @@
+{
+  "name": "stride-workflow",
+  "version": "0.1.0",
+  "description": "Frame-and-carry workflow scaffolding for Codex-first repo work.",
+  "type": "module",
+  "bin": {
+    "stride": "./bin/stride.js"
+  },
+  "files": [
+    "bin",
+    "templates",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node --check bin/stride.js",
+    "smoke": "node bin/stride.js --help && node bin/stride.js version && node bin/stride.js command kit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jayrmiso/stride.git"
+  },
+  "keywords": [
+    "codex",
+    "workflow",
+    "cli",
+    "ai",
+    "worktree"
+  ],
+  "license": "MIT"
+}
