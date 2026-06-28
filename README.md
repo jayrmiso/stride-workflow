@@ -1,57 +1,39 @@
 # Stride
 
-Stride is a Codex-first workflow system for framing work before carrying it through.
+Stride is a Codex-first workflow CLI for installing a repo-local development system. It gives Codex a small set of project commands, durable workflow files, and a manual-test handoff so work happens in the right checkout and ends in a clear state.
 
-The user-facing loop is:
+![Stride workflow diagram](docs/stride-flow.svg)
 
-```text
-$stride frame <task>
-$stride carry
-manual test
-$stride land
-```
+## Why Stride Exists
 
-`frame` turns an idea into a concrete spec after inspecting the repo. `carry` creates or uses the Stride worktree, implements the accepted frame, checks it, reviews it, starts the correct preview, and writes a manual-test handoff. `land` publishes the approved work.
+Large agent workflows can be powerful, but they can also spend too much context on ceremony. Stride keeps the useful parts: shape the work, isolate it, implement it, check it, preview it, let the human judge it, then land it.
 
-Tiny changes can skip the frame with:
+Stride is built around a simple idea:
 
 ```text
-$stride touch <small change>
+frame the work -> carry it safely -> manually test -> land it
 ```
 
-Frontend consistency and screenshot-inspired UI work can use:
+For tiny edits, Stride skips the full frame and uses `touch`.
 
-```text
-$stride kit ui
-```
+## Install
 
-`kit ui` audits the existing frontend, studies reference screenshots when provided, proposes reusable components/tokens, migrates repeated UI carefully, and ends with a preview plus manual comparison checklist.
-
-## Internal Phases
-
-- `intake`: understands the user request
-- `probe`: explores the repo for relevant facts
-- `framer`: writes the approved work frame
-- `builder`: implements the frame
-- `checker`: runs real verification commands
-- `debugger`: investigates failures
-- `reviewer`: reviews behavior and regressions
-- `fixer`: applies review fixes
-- `ui-auditor`: finds repeated or inconsistent UI
-- `reference-reader`: extracts layout, spacing, hierarchy, and interaction cues from screenshots
-- `kit-designer`: proposes reusable components and tokens
-- `migrator`: replaces repeated UI with shared components
-- `worktree`: isolates carry work from main
-- `previewer`: starts the app from the active worktree
-- `handoff`: writes what changed and what to manually check
-- `ledger`: records durable project knowledge
-
-## Install Into A Project
-
-From GitHub:
+Install Stride into the current project from GitHub:
 
 ```bash
 npx github:jayrmiso/stride init
+```
+
+Install into a specific project:
+
+```bash
+npx github:jayrmiso/stride init /path/to/project
+```
+
+Verify the install:
+
+```bash
+npx github:jayrmiso/stride doctor /path/to/project
 ```
 
 From a local checkout:
@@ -60,17 +42,131 @@ From a local checkout:
 node bin/stride.js init /path/to/project
 ```
 
-That writes:
+## What Gets Installed
 
-- `.stride/config.md`
-- `.stride/ledger.md`
-- `.stride/commands/*.md`
-- `.stride/phases/*.md`
-- `AGENTS.md`
+```text
+.stride/
+  commands/
+    touch.md
+    frame.md
+    carry.md
+    land.md
+    kit.md
+    review.md
+    mend.md
+    status.md
+  phases/
+    intake.md
+    probe.md
+    framer.md
+    builder.md
+    checker.md
+    debugger.md
+    reviewer.md
+    fixer.md
+    worktree.md
+    previewer.md
+    handoff.md
+    ui-auditor.md
+    reference-reader.md
+    kit-designer.md
+    migrator.md
+    ledger.md
+  config.md
+  ledger.md
+AGENTS.md
+```
 
-`AGENTS.md` is the Codex bridge. It tells Codex to read the Stride files before substantial work.
+`AGENTS.md` is the Codex bridge. It tells Codex to route `$stride ...` chat commands through the files in `.stride/`.
+
+## Core Workflow
+
+For normal feature work:
+
+```text
+$stride frame create a product details page
+$stride carry
+manual test the preview URL
+$stride land
+```
+
+What happens internally:
+
+```text
+frame
+  -> intake
+  -> probe
+  -> framer
+  -> writes .stride/frames/current.md
+  -> stops for approval
+
+carry
+  -> worktree
+  -> light probe
+  -> builder
+  -> checker
+  -> debugger if needed
+  -> reviewer
+  -> fixer if needed
+  -> previewer
+  -> handoff
+  -> ledger
+
+land
+  -> verify active run
+  -> commit
+  -> push
+  -> create PR
+  -> merge when approved
+  -> cleanup worktree
+```
+
+The handoff card lives at `.stride/runs/current.md`. It should include the active worktree, branch, preview URL, what changed, what to check manually, passed checks, risks, and next command.
+
+## Tiny Changes
+
+Use `touch` when a full frame would be wasteful:
+
+```text
+$stride touch change the primary button color
+$stride touch fix the typo on the login page
+$stride touch tighten the spacing in the settings cards
+```
+
+Internal flow:
+
+```text
+quick probe -> builder -> checker if useful -> previewer if user-facing -> handoff
+```
+
+## UI Kit Workflow
+
+Use `kit ui` when the frontend is becoming inconsistent or when you want to adapt a screenshot/reference into your own app:
+
+```text
+$stride kit ui
+$stride kit ui from screenshot.png
+```
+
+Internal flow:
+
+```text
+worktree
+-> ui-auditor
+-> reference-reader if provided
+-> kit-designer
+-> builder
+-> migrator if needed
+-> checker
+-> previewer
+-> handoff
+```
+
+`kit ui` should not blindly clone another app. It should translate the reference into layout, spacing, hierarchy, tokens, components, and interaction patterns that fit your product.
 
 ## Commands
+
+CLI commands:
 
 ```bash
 stride init [path] [--force] [--no-codex]
@@ -81,43 +177,58 @@ stride doctor [path]
 stride version
 ```
 
-`stride command carry` and `stride carry` both print the installed workflow instructions for that command. The actual implementation work happens in Codex after the user invokes the matching `$stride ...` command in chat.
-
-## Workflow
-
-Tiny change:
+Codex chat commands:
 
 ```text
-$stride touch change the primary button color
-```
-
-Normal feature:
-
-```text
-$stride frame create a product details page
+$stride touch <small change>
+$stride frame <task>
 $stride carry
-manual test the preview URL
 $stride land
+$stride kit ui [from reference]
+$stride review
+$stride mend <issue>
+$stride status
 ```
 
-Frontend consistency:
+`stride command carry` and `stride carry` both print the workflow instructions for that command. The implementation work happens in Codex after the user invokes the matching `$stride ...` command in chat.
+
+## Status And Manual Testing
+
+After `carry`, Stride should leave you with a manual-test card:
 
 ```text
-$stride kit ui from screenshot.png
+Status: Ready for manual test
+Worktree: .stride/worktrees/product-details
+Branch: stride/product-details
+Preview: http://127.0.0.1:3107/products/123
+
+What Changed:
+- Added product details page
+- Linked product cards to the details page
+- Added not-found state
+
+What To Check:
+- Details render correctly
+- Mobile layout does not overflow
+- Missing product ID shows the expected state
+
+Next:
+- If wrong: $stride mend <issue>
+- If good: $stride land
 ```
 
-Bug after manual testing:
+If you forget the URL or what changed:
 
-```text
-$stride mend the mobile title overlaps the button
+```bash
+stride status
 ```
 
-## Release
+## Current Boundary
 
-First public version: `v0.1.0`.
+`v0.1.0` is an instruction-driven Stride release. It installs the workflow files, Codex bridge, command docs, and phase docs.
 
-## Current Target
+The next major step is making the CLI execute more of the workflow directly: create worktrees, start previews, create PRs, and clean up after landing.
 
-Stride currently works best with Codex because Codex understands repo-local instruction files and can use the `.stride` ledger during real implementation work.
+## License
 
-The CLI is intentionally separate from Codex, though. Later adapters can generate instructions for Claude, OpenCode, or other tools without changing the core workflow.
+MIT
