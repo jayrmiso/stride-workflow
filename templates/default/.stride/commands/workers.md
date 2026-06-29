@@ -29,7 +29,7 @@ Modes:
 Rules:
 
 - Start with the smallest mode that can safely finish the work.
-- Carry and land should use default mode unless a stronger mode is justified.
+- Touch, carry, and land should use default mode unless a stronger mode is justified.
 - Default mode requires the `stride-reviewer` worker for the scoped diff.
 - If the worker is unavailable, report that limitation in the handoff and run the same review locally.
 - Do not add more than the reviewer worker for tiny changes.

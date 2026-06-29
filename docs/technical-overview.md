@@ -61,6 +61,7 @@ Tiny change:
 $stride touch <small change>
 ```
 
+Touch skips the frame/spec step only. It still uses the same worktree, checks, reviewer-worker, preview when useful, handoff, and ledger flow as carry.
 Even tiny changes use a Stride worktree so the edited checkout stays isolated.
 Installed repos also get a repo-local runner:
 
@@ -116,7 +117,7 @@ AGENTS.md
 
 `AGENTS.md` tells Codex to route `$stride ...` chat commands through the `.stride/` files.
 
-`.codex/agents/stride-reviewer.toml` is the default worker used by carry and land to review the scoped diff without giving the worker write access.
+`.codex/agents/stride-reviewer.toml` is the default worker used by touch, carry, and land to review the scoped diff without giving the worker write access.
 
 ## Token Posture
 

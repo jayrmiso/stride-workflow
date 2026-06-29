@@ -18,14 +18,14 @@ Use this skill when working in a repository that has Stride Workflow installed a
 - Read `.stride/config.md` first.
 - Route the request through the matching `.stride/commands/*.md` file.
 - Use `.stride/phases/*.md` for deeper workflow behavior.
-- Use `.stride/phases/workers.md` before carry and land so the default reviewer worker is included.
+- Use `.stride/phases/workers.md` before touch, carry, and land so the default reviewer worker is included.
 - Use `.stride/phases/worktree.md` before editing so work happens in the isolated checkout, not main.
 - Use the repo-local Stride runner: `node .stride/bin/stride-workflow.mjs`.
 - If the Stride runner is missing or fails, stop and ask the user to update Stride. Do not fall back to raw `git worktree` commands.
 - Run the Stride runner's `worktree create <task-slug>` before implementation when no active Stride worktree exists.
 - Run the Stride runner's `worktree assert <active-worktree-path>` before editing; stop if it fails.
 - Announce each Stride phase before doing it.
-- For carry and land, spawn or use `stride-reviewer` against the scoped diff before handoff.
+- For touch, carry, and land, spawn or use `stride-reviewer` against the scoped diff before handoff.
 - Keep worktree, frame, carry, review, and handoff behavior aligned with the installed Stride files.
 - Update `.stride/ledger.md` when you learn something durable.
 
@@ -33,7 +33,8 @@ Use this skill when working in a repository that has Stride Workflow installed a
 
 - `touch` for tiny changes.
 - `frame` to define the work.
-- `carry` to implement in an isolated worktree.
+- `touch` skips frame/spec only; it still uses worktree, checks, reviewer, preview when useful, and handoff.
+- `carry` implements an approved frame in the same execution/review flow.
 - `land` after manual verification.
 - `kit` for UI consistency and reference-driven frontend work.
 - `review` and `mend` for review follow-up.

@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.14] - 2026-06-29
+
+### Changed
+
+- Made `$stride touch` use the same worktree, checks, reviewer-worker, fixer, preview, handoff, and ledger flow as `$stride carry`.
+- Clarified that touch skips frame/spec only; it does not skip review.
+- Updated worker guidance so touch, carry, and land all use the default reviewer worker unless a stronger mode is justified.
+
 ## [1.0.13] - 2026-06-29
 
 ### Changed
