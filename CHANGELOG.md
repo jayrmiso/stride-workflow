@@ -10,6 +10,13 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.5] - 2026-06-29
+
+### Changed
+
+- Added `stride-workflow subject` to derive a conventional commit subject from the active frame and handoff.
+- Made `$stride land` and the land skill point at the derived subject flow.
+
 ## [1.0.4] - 2026-06-29
 
 ### Changed
