@@ -10,6 +10,19 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.9] - 2026-06-29
+
+### Changed
+
+- Refined the existing-install upgrade prompt to say when Stride is already current and the run is just refreshing installed files.
+
+## [1.0.8] - 2026-06-29
+
+### Changed
+
+- Made `stride-workflow init` show a Stride changelog summary when upgrading an existing install, instead of listing file paths.
+- Kept `--yes` for non-interactive upgrades.
+
 ## [1.0.7] - 2026-06-29
 
 ### Changed

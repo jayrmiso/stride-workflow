@@ -14,9 +14,11 @@ const agentsBridgeStart = "<!-- stride-workflow:start -->";
 const agentsBridgeEnd = "<!-- stride-workflow:end -->";
 
 const commandNames = ["touch", "frame", "carry", "land", "kit", "review", "mend", "status", "workers"];
+const strideVersionFile = path.join(".stride", "version.txt");
 const requiredPaths = [
   ".stride/config.md",
   ".stride/ledger.md",
+  ".stride/version.txt",
   ".agents/skills/stride/SKILL.md",
   ".agents/skills/stride-workers/SKILL.md",
   ".agents/skills/stride-touch/SKILL.md",
@@ -94,6 +96,33 @@ function fail(message) {
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
+}
+
+function parseVersion(version) {
+  return version.split(".").map((part) => Number.parseInt(part, 10) || 0);
+}
+
+function compareVersions(a, b) {
+  const left = parseVersion(a);
+  const right = parseVersion(b);
+  for (let index = 0; index < Math.max(left.length, right.length); index += 1) {
+    const diff = (left[index] ?? 0) - (right[index] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+function readInstalledStrideVersion(projectDir) {
+  const filePath = path.join(projectDir, strideVersionFile);
+  if (!fs.existsSync(filePath)) return null;
+  const version = fs.readFileSync(filePath, "utf8").trim();
+  return version || null;
+}
+
+function writeInstalledStrideVersion(projectDir) {
+  const filePath = path.join(projectDir, strideVersionFile);
+  ensureDir(path.dirname(filePath));
+  fs.writeFileSync(filePath, `${packageJson.version}\n`);
 }
 
 function collectDirChanges(srcDir, destDir, options, changes = []) {
@@ -233,6 +262,91 @@ function inferCommitSubject(projectDir) {
   return `${type}: ${topic}`;
 }
 
+function parseChangelogSections(changelogText) {
+  const sections = [];
+  const lines = changelogText.split(/\r?\n/);
+  let current = null;
+
+  const pushCurrent = () => {
+    if (!current) return;
+    current.body = current.body
+      .map((line) => line.replace(/\s+$/u, ""))
+      .filter((line, index, list) => !(line === "" && list[index - 1] === ""));
+    sections.push(current);
+  };
+
+  for (const line of lines) {
+    const match = line.match(/^## \[(\d+\.\d+\.\d+)\] - (.+)$/);
+    if (match) {
+      pushCurrent();
+      current = { version: match[1], date: match[2], body: [] };
+      continue;
+    }
+
+    if (current) {
+      current.body.push(line);
+    }
+  }
+
+  pushCurrent();
+  return sections;
+}
+
+function collectSectionBullets(lines) {
+  const bullets = [];
+  let current = "";
+
+  for (const line of lines) {
+    if (/^### /.test(line)) continue;
+    if (/^\s*-\s+/.test(line)) {
+      if (current) bullets.push(current);
+      current = line.replace(/^\s*-\s+/, "").trim();
+      continue;
+    }
+    if (current && line.trim()) {
+      current += ` ${line.trim()}`;
+      continue;
+    }
+    if (current && !line.trim()) {
+      bullets.push(current);
+      current = "";
+    }
+  }
+
+  if (current) bullets.push(current);
+  return bullets;
+}
+
+function summarizeStrideUpdates(installedVersion) {
+  const changelogText = fs.readFileSync(path.join(rootDir, "CHANGELOG.md"), "utf8");
+  const sections = parseChangelogSections(changelogText);
+  const newerSections = installedVersion
+    ? sections.filter((section) => compareVersions(section.version, installedVersion) > 0)
+    : sections.slice(0, 3);
+
+  if (newerSections.length === 0) {
+    return `Stride is already at ${packageJson.version}. This run will refresh the installed Stride files from the current release.\n`;
+  }
+
+  const lines = [];
+  const label = installedVersion ? `Stride updates since ${installedVersion}:` : "Latest Stride updates:";
+  lines.push(label);
+
+  for (const section of newerSections.slice(0, 4)) {
+    const bullets = collectSectionBullets(section.body).slice(0, 3);
+    lines.push(`- ${section.version} (${section.date})`);
+    for (const bullet of bullets) {
+      lines.push(`  - ${bullet}`);
+    }
+  }
+
+  if (newerSections.length > 4) {
+    lines.push(`  - ...and ${newerSections.length - 4} more release(s). See CHANGELOG.md.`);
+  }
+
+  return `${lines.join("\n")}\n`;
+}
+
 function copyDir(src, dest, options) {
   ensureDir(dest);
 
@@ -316,19 +430,9 @@ function hasExistingStride(projectDir) {
   return fs.existsSync(path.join(projectDir, ".stride")) || fs.existsSync(path.join(projectDir, ".agents")) || fs.existsSync(path.join(projectDir, "AGENTS.md"));
 }
 
-function formatUpdateSummary(changes) {
-  const lines = ["Stride Workflow update summary:"];
-  for (const change of changes) {
-    lines.push(`- ${change.action} ${change.relPath}`);
-  }
-  return `${lines.join("\n")}\n`;
-}
-
-async function confirmUpdate(projectDir, changes) {
-  if (changes.length === 0) return true;
-
+async function confirmUpdate(projectDir, summary) {
   process.stdout.write(`Stride Workflow updates available in ${projectDir}\n`);
-  process.stdout.write(formatUpdateSummary(changes));
+  process.stdout.write(summary);
 
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
     process.stdout.write("Non-interactive session detected; applying updates.\n");
@@ -356,6 +460,7 @@ async function initProject(args) {
   }
 
   const existingStride = hasExistingStride(projectDir);
+  const installedVersion = readInstalledStrideVersion(projectDir);
   const strideChanges = collectDirChanges(path.join(templateDir, ".stride"), path.join(projectDir, ".stride"), {
     cwd: projectDir,
     force,
@@ -365,12 +470,14 @@ async function initProject(args) {
     : collectDirChanges(path.join(templateDir, ".agents"), path.join(projectDir, ".agents"), {
         cwd: projectDir,
         force,
-      });
+  });
   const bridgeChange = noCodex ? null : collectCodexBridgeChange(projectDir);
   const changes = [...strideChanges, ...agentChanges, ...(bridgeChange ? [bridgeChange] : [])];
+  const needsVersionUpdate = installedVersion !== packageJson.version;
+  const shouldPrompt = existingStride && (changes.length > 0 || needsVersionUpdate) && !yes && !force;
 
-  if (existingStride && changes.length > 0 && !yes && !force) {
-    const shouldUpdate = await confirmUpdate(projectDir, changes);
+  if (shouldPrompt) {
+    const shouldUpdate = await confirmUpdate(projectDir, summarizeStrideUpdates(installedVersion));
     if (!shouldUpdate) {
       console.log("Skipped updating existing Stride install.");
       return;
@@ -394,6 +501,8 @@ async function initProject(args) {
       applyCodexBridgeChange(bridgeChange);
     }
   }
+
+  writeInstalledStrideVersion(projectDir);
 
   console.log("");
   console.log(`Stride Workflow initialized in ${projectDir}`);

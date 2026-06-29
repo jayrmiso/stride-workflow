@@ -30,6 +30,8 @@ stride-workflow doctor [path]
 stride-workflow version
 ```
 
+When `init` runs against an existing Stride install, it shows a Stride changelog summary for newer versions before asking to update.
+
 ## Internal Phases
 
 - `intake`: request interpreter
