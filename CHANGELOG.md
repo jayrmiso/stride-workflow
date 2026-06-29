@@ -10,6 +10,12 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.2] - 2026-06-29
+
+### Changed
+
+- Split the Codex skill install into multiple Stride skills so the `$` picker can surface command-specific actions like `stride-frame` and `stride-carry`.
+
 ## [1.0.1] - 2026-06-29
 
 ### Added
