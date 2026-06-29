@@ -24,6 +24,7 @@ CLI commands:
 stride-workflow init [path] [--force] [--no-codex] [--yes]
 stride-workflow command <touch|frame|carry|land|kit|review|mend|status|workers>
 stride-workflow <touch|frame|carry|land|kit|review|mend|status|workers>
+stride-workflow worktree <create|status|assert|cleanup> [slug-or-path]
 stride-workflow workers [path]
 stride-workflow subject [path]
 stride-workflow status [path]
@@ -61,6 +62,9 @@ $stride touch <small change>
 ```
 
 Even tiny changes use a Stride worktree so the edited checkout stays isolated.
+`stride-workflow worktree create <task-slug>` creates or reuses `.stride/worktrees/<task-slug>`.
+`stride-workflow worktree assert` must pass from that worktree before Codex edits files.
+`stride-workflow worktree cleanup <path>` removes a Stride worktree after merge or explicit cleanup approval.
 
 Normal feature:
 
@@ -103,6 +107,10 @@ AGENTS.md
 `AGENTS.md` tells Codex to route `$stride ...` chat commands through the `.stride/` files.
 
 `.codex/agents/stride-reviewer.toml` is the default worker used by carry and land to review the scoped diff without giving the worker write access.
+
+## Token Posture
+
+Default Stride is intentionally lighter than a full multi-agent pipeline: the main chat builds, and one read-only reviewer worker checks the scoped diff. Broader discovery or debugging should escalate through `balance` or `heavy` only when the task justifies the token cost.
 
 ## Diagram
 

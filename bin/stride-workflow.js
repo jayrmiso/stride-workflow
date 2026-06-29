@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { createInterface } from "node:readline/promises";
@@ -72,6 +73,7 @@ Usage:
   stride-workflow init [path] [--force] [--no-codex] [--yes]
   stride-workflow command <touch|frame|carry|land|kit|review|mend|status|workers>
   stride-workflow <touch|frame|carry|land|kit|review|mend|status|workers>
+  stride-workflow worktree <create|status|assert|cleanup> [slug-or-path]
   stride-workflow workers [path]
   stride-workflow subject [path]
   stride-workflow status [path]
@@ -82,6 +84,7 @@ Usage:
 Commands:
   init     Install or refresh .stride workflow files in a project.
   command  Print the instructions for one Stride Workflow command.
+  worktree Create, inspect, assert, or clean up the active Stride worktree.
   workers  Print the worker policy for token-aware execution.
   subject  Suggest a conventional commit subject from the active frame and handoff.
   doctor   Check whether a project has the expected Stride Workflow files.
@@ -377,7 +380,7 @@ function buildCodexBridge() {
     "- Route $stride commands through .stride/commands/.",
     "- Use .stride/phases/ for internal phase behavior.",
     "- Announce the active Stride phase before doing it.",
-    "- Do not edit application files until the Stride worktree phase is complete.",
+    "- Do not edit application files until `stride-workflow worktree assert` passes inside the active Stride worktree.",
     "- Spawn or use the stride-reviewer worker during carry and land before handoff.",
     "- Use .stride/runs/current.md for the latest manual-test handoff when it exists.",
     "- Use .stride/ledger.md for durable project facts.",
@@ -561,21 +564,252 @@ function showStatus(args) {
   process.stdout.write(fs.readFileSync(ledger, "utf8"));
 }
 
+function runGit(args, cwd) {
+  return execFileSync("git", args, {
+    cwd,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  }).trim();
+}
+
+function tryRunGit(args, cwd) {
+  try {
+    return runGit(args, cwd);
+  } catch {
+    return null;
+  }
+}
+
+function resolveGitRoot(startDir) {
+  const root = tryRunGit(["rev-parse", "--show-toplevel"], startDir);
+  if (!root) fail(`not inside a git repository: ${startDir}`);
+  return root;
+}
+
+function currentBranch(cwd) {
+  return tryRunGit(["branch", "--show-current"], cwd) || "(detached)";
+}
+
+function sanitizeSlug(value) {
+  const slug = (value || "stride-work")
+    .toLowerCase()
+    .replace(/[^a-z0-9._/-]+/g, "-")
+    .replace(/^[-/]+|[-/]+$/g, "")
+    .replace(/\/+/g, "-")
+    .slice(0, 80);
+  return slug || "stride-work";
+}
+
+function parseWorktrees(output) {
+  const worktrees = [];
+  let current = null;
+
+  for (const line of output.split(/\r?\n/)) {
+    if (!line.trim()) {
+      if (current) worktrees.push(current);
+      current = null;
+      continue;
+    }
+
+    const [key, ...rest] = line.split(" ");
+    const value = rest.join(" ");
+    if (key === "worktree") {
+      if (current) worktrees.push(current);
+      current = { path: value, branch: "(unknown)" };
+    } else if (current && key === "branch") {
+      current.branch = value.replace(/^refs\/heads\//, "");
+    }
+  }
+
+  if (current) worktrees.push(current);
+  return worktrees;
+}
+
+function listGitWorktrees(projectDir) {
+  return parseWorktrees(runGit(["worktree", "list", "--porcelain"], projectDir));
+}
+
+function findWorktreeByBranch(projectDir, branch) {
+  return listGitWorktrees(projectDir).find((entry) => entry.branch === branch) || null;
+}
+
+function readActiveRunWorktree(projectDir) {
+  const runPath = path.join(projectDir, ".stride", "runs", "current.md");
+  if (!fs.existsSync(runPath)) return null;
+  const text = fs.readFileSync(runPath, "utf8");
+  const worktreeMatch = text.match(/active worktree path\s*:\s*(.+)$/im);
+  const branchMatch = text.match(/active branch\s*:\s*(.+)$/im);
+  if (!worktreeMatch?.[1]) return null;
+  return {
+    path: worktreeMatch[1].trim(),
+    branch: branchMatch?.[1]?.trim() || currentBranch(worktreeMatch[1].trim()),
+  };
+}
+
+function writeActiveRunWorktree(projectDir, worktreePath, branch) {
+  const runDir = path.join(projectDir, ".stride", "runs");
+  ensureDir(runDir);
+  const runPath = path.join(runDir, "current.md");
+  const existing = fs.existsSync(runPath) ? fs.readFileSync(runPath, "utf8").trim() : "";
+  const block = [
+    "Status: Worktree ready",
+    `Active worktree path: ${worktreePath}`,
+    `Active branch: ${branch}`,
+    "Worker mode used: pending",
+    "Reviewer worker result: pending",
+    "Next command: continue the current Stride phase from the active worktree",
+  ].join("\n");
+  fs.writeFileSync(runPath, existing ? `${block}\n\n---\n\n${existing}\n` : `${block}\n`);
+}
+
+function resolveBaseBranch(projectDir) {
+  const current = currentBranch(projectDir);
+  if (current === "main" || current === "master") return current;
+  const mainExists = tryRunGit(["rev-parse", "--verify", "main"], projectDir);
+  if (mainExists) return "main";
+  const masterExists = tryRunGit(["rev-parse", "--verify", "master"], projectDir);
+  if (masterExists) return "master";
+  return "HEAD";
+}
+
+function printWorktreeStatus(projectDir, worktreePath, branch) {
+  console.log(`Project: ${projectDir}`);
+  console.log(`Active worktree path: ${worktreePath}`);
+  console.log(`Active branch: ${branch}`);
+  console.log(`On main/master: ${branch === "main" || branch === "master" ? "yes" : "no"}`);
+}
+
+function createStrideWorktree(args) {
+  const projectDir = resolveGitRoot(process.cwd());
+  const slug = sanitizeSlug(args[0]);
+  const branch = `stride/${slug}`;
+  const worktreePath = path.join(projectDir, ".stride", "worktrees", slug);
+  const existing = findWorktreeByBranch(projectDir, branch);
+
+  ensureDir(path.dirname(worktreePath));
+
+  if (existing) {
+    writeActiveRunWorktree(projectDir, existing.path, existing.branch);
+    printWorktreeStatus(projectDir, existing.path, existing.branch);
+    return;
+  }
+
+  if (fs.existsSync(worktreePath)) {
+    fail(`worktree path already exists but is not registered for ${branch}: ${worktreePath}`);
+  }
+
+  const baseBranch = resolveBaseBranch(projectDir);
+  runGit(["worktree", "add", worktreePath, "-b", branch, baseBranch], projectDir);
+  writeActiveRunWorktree(projectDir, worktreePath, branch);
+  printWorktreeStatus(projectDir, worktreePath, branch);
+}
+
+function statusStrideWorktree(args) {
+  const projectDir = resolveGitRoot(process.cwd());
+  const target = args[0] ? path.resolve(args[0]) : null;
+  const active = target
+    ? { path: target, branch: currentBranch(target) }
+    : readActiveRunWorktree(projectDir) || { path: projectDir, branch: currentBranch(projectDir) };
+  printWorktreeStatus(projectDir, active.path, active.branch);
+}
+
+function assertStrideWorktree(args) {
+  const projectDir = resolveGitRoot(process.cwd());
+  const target = args[0] ? path.resolve(args[0]) : process.cwd();
+  const branch = currentBranch(target);
+  const root = resolveGitRoot(target);
+  const isMain = branch === "main" || branch === "master";
+  const isStrideWorktree = root.includes(`${path.sep}.stride${path.sep}worktrees${path.sep}`);
+
+  printWorktreeStatus(projectDir, root, branch);
+
+  if (isMain) {
+    fail("refusing to continue from main/master; run `stride-workflow worktree create <slug>` and continue from that worktree");
+  }
+
+  if (!isStrideWorktree) {
+    fail(`not inside a Stride worktree under .stride/worktrees: ${root}`);
+  }
+}
+
+function cleanupStrideWorktree(args) {
+  const projectDir = resolveGitRoot(process.cwd());
+  const deleteBranch = args.includes("--delete-branch");
+  const cleanArgs = args.filter((arg) => arg !== "--delete-branch");
+  const active = cleanArgs[0]
+    ? { path: path.resolve(cleanArgs[0]), branch: currentBranch(path.resolve(cleanArgs[0])) }
+    : readActiveRunWorktree(projectDir);
+
+  if (!active?.path) {
+    fail("no active Stride worktree found; pass a worktree path or run from a repo with .stride/runs/current.md");
+  }
+
+  const worktreeRoot = resolveGitRoot(active.path);
+  const branch = active.branch || currentBranch(worktreeRoot);
+  const isMain = branch === "main" || branch === "master";
+  const isStrideWorktree = worktreeRoot.includes(`${path.sep}.stride${path.sep}worktrees${path.sep}`);
+
+  if (isMain) {
+    fail("refusing to remove a main/master worktree");
+  }
+  if (!isStrideWorktree) {
+    fail(`refusing to remove non-Stride worktree: ${worktreeRoot}`);
+  }
+
+  runGit(["worktree", "remove", worktreeRoot], projectDir);
+  console.log(`removed worktree ${worktreeRoot}`);
+
+  if (deleteBranch) {
+    runGit(["branch", "-d", branch], projectDir);
+    console.log(`deleted branch ${branch}`);
+  } else {
+    console.log(`kept branch ${branch}`);
+  }
+}
+
+function worktree(args) {
+  const action = args[0];
+  const rest = args.slice(1);
+
+  switch (action) {
+    case "create":
+      createStrideWorktree(rest);
+      break;
+    case "status":
+      statusStrideWorktree(rest);
+      break;
+    case "assert":
+      assertStrideWorktree(rest);
+      break;
+    case "cleanup":
+      cleanupStrideWorktree(rest);
+      break;
+    default:
+      fail("expected worktree action to be one of: create, status, assert, cleanup");
+  }
+}
+
 function doctor(args) {
   const projectDir = path.resolve(args[0] ?? process.cwd());
   const missing = requiredPaths.filter((requiredPath) => {
     return !fs.existsSync(path.join(projectDir, requiredPath));
   });
+  const installedVersion = readInstalledStrideVersion(projectDir);
+  const problems = [...missing.map((missingPath) => `missing ${missingPath}`)];
 
-  if (missing.length === 0) {
+  if (installedVersion && installedVersion !== packageJson.version) {
+    problems.push(`installed version ${installedVersion} does not match CLI version ${packageJson.version}`);
+  }
+
+  if (problems.length === 0) {
     console.log(`Stride Workflow looks ready in ${projectDir}`);
     return;
   }
 
   console.log(`Stride Workflow is incomplete in ${projectDir}`);
   console.log("");
-  for (const missingPath of missing) {
-    console.log(`missing ${missingPath}`);
+  for (const problem of problems) {
+    console.log(problem);
   }
   process.exitCode = 1;
 }
@@ -603,6 +837,9 @@ async function main() {
       break;
     case "command":
       printCommand(args);
+      break;
+    case "worktree":
+      worktree(args);
       break;
     case "doctor":
       doctor(args);

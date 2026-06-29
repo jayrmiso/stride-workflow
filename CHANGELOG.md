@@ -10,6 +10,15 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.12] - 2026-06-29
+
+### Changed
+
+- Added executable `stride-workflow worktree create`, `worktree status`, `worktree assert`, and `worktree cleanup` commands so Stride can prove work is happening away from `main` or `master` and clean up safely after merge.
+- Updated carry, touch, land, skills, and the Codex bridge to require worktree assertion before edits or commits.
+- Strengthened the default reviewer worker with focused review passes and blocking/minor triage while keeping the default token posture to one reviewer worker.
+- Made `doctor` report installed-version drift instead of only checking for missing files.
+
 ## [1.0.11] - 2026-06-29
 
 ### Changed
