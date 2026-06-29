@@ -12,6 +12,7 @@ Primary commands: `$stride spec`, `$stride impl`, and `$stride land`
 - Treat the main chat as the orchestrator for patch, impl, and land.
 - Use `stridebuilder` as the default implementation worker for patch and impl.
 - Use `stridereviewer` as the default reviewer worker for patch, impl, and land.
+- Use `stridelead` as the read-only recon worker when extra repo facts are needed.
 - Once `stridebuilder` is spawned, the orchestrator stops editing and becomes coordination-only for that scoped change.
 - If the orchestrator writes files after spawning `stridebuilder` for the same scope, treat that as a workflow violation and restart the scope through the builder worker.
 - Announce each active phase before doing it so the user can see the flow.
@@ -19,7 +20,7 @@ Primary commands: `$stride spec`, `$stride impl`, and `$stride land`
 - If the Stride runner is missing or fails, stop and ask the user to update Stride. Do not fall back to raw `git worktree` commands.
 - Do not edit application files until the Stride runner's `worktree assert` passes for the active Stride worktree.
 - Escalate to planning only when product direction, architecture, or sequencing is genuinely unclear.
-- Escalate beyond the default reviewer only when the change affects contracts, data, auth, payments, persistence, deployment, or broad public behavior.
+- Escalate beyond the default reviewer only when the change affects contracts, data, auth, payments, persistence, deployment, broad public behavior, or when a recon pass would materially reduce uncertainty.
 - Escalate to debug when there is a concrete failure to reproduce.
 - End impl work with a ledger update: changed files, checks run, current status, and next action.
 

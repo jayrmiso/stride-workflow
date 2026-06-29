@@ -23,8 +23,8 @@ Use this when:
 Modes:
 
 - `default`: main chat orchestrates, `stridebuilder` edits, `stridereviewer` reviews
-- `balance`: default mode plus `stridelead` or one probe/debug helper when the task needs more discovery
-- `heavy`: `stridelead` planning plus builder, reviewer, and extra probe/debug support for broad, risky, or cross-cutting changes
+- `balance`: default mode plus `stridelead` recon or one probe/debug helper when the task needs more discovery
+- `heavy`: `stridelead` recon plus builder, reviewer, and extra probe/debug support for broad, risky, or cross-cutting changes
 
 Rules:
 
@@ -33,6 +33,6 @@ Rules:
 - Default patch and impl require `stridebuilder` for edits and `stridereviewer` for the scoped diff.
 - Default land requires `stridereviewer` for the final scoped diff.
 - If a required worker is unavailable, stop and report the workflow limitation. Do not silently do the worker's job in the main chat.
-- Do not add `stridelead` for small changes unless the scope is unclear or risky.
+- Do not add `stridelead` for small changes unless the repo facts are unclear or risky.
 - Escalate from `default` to `balance` or `heavy` only when the task justifies the token cost.
 - Record the chosen mode in the handoff when it matters to the next step.

@@ -419,6 +419,7 @@ function buildCodexBridge() {
     "- Treat the main chat as orchestrator for patch, impl, and land.",
     "- If the main chat has spawned `stridebuilder` for a scoped change, it must stop writing files for that scope and only coordinate, verify, and hand off.",
     "- Spawn or use stridebuilder for patch and impl implementation work.",
+    "- Use stridelead as the read-only recon worker when extra repo facts are needed.",
     "- Spawn or use stridereviewer during patch, impl, and land before handoff.",
     "- Use .stride/runs/current.md for the latest manual-test handoff when it exists.",
     "- Use .stride/ledger.md for durable project facts.",
