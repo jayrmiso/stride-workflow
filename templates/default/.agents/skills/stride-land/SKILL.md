@@ -17,5 +17,5 @@ Use this skill when work is ready to land after manual verification.
 
 - Check the final diff.
 - Preserve any handoff notes.
+- Use a conventional commit subject that matches the approved frame.
 - Land only what was actually verified.
-

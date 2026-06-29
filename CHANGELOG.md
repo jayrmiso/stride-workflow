@@ -10,6 +10,12 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.3] - 2026-06-29
+
+### Changed
+
+- Made `$stride land` prefer conventional commit subjects and surface a suggested commit subject in the handoff card.
+
 ## [1.0.2] - 2026-06-29
 
 ### Changed
