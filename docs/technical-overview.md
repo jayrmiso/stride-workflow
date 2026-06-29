@@ -121,11 +121,11 @@ AGENTS.md
 
 `.codex/agents/stridebuilder.toml` is the default editing worker used by patch and impl.
 `.codex/agents/stridereviewer.toml` is the default review worker used by patch, impl, and land to review the scoped diff without giving the worker write access.
-`.codex/agents/stridelead.toml` is optional for balance/heavy planning when scope or risk needs more thought.
+`.codex/agents/stridelead.toml` is optional for balance/heavy read-only recon when scope or risk needs more repo facts.
 
 ## Token Posture
 
-Default Stride uses a small worker loop: the main chat orchestrates, `stridebuilder` edits, and `stridereviewer` checks the scoped diff. Broader planning, discovery, or debugging should escalate through `balance` or `heavy` only when the task justifies the token cost.
+Default Stride uses a small worker loop: the main chat orchestrates, `stridebuilder` edits, and `stridereviewer` checks the scoped diff. Broader recon, discovery, or debugging should escalate through `balance` or `heavy` only when the task justifies the token cost.
 
 ## Diagram
 

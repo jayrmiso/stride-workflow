@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.16] - 2026-06-30
+
+### Changed
+
+- Clarified `stridelead` as a read-only recon worker instead of a planning worker.
+- Hardened the orchestrator boundary so the main chat stops writing once `stridebuilder` is spawned for a scope.
+- Updated the public technical overview and README to reflect the split between builder, reviewer, and recon workers.
+
 ## [1.0.15] - 2026-06-29
 
 ### Changed

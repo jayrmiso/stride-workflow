@@ -2,6 +2,8 @@
 
 Stride Workflow is a Codex-first workflow tool for keeping repo work specified, isolated, reviewed, and easy to hand off for manual testing.
 
+Default worker split: `stridebuilder` writes, `stridereviewer` reviews, and `stridelead` is read-only recon when extra repo facts are worth it.
+
 ![Stride Workflow diagram](docs/stride-flow.svg)
 
 For the technical workflow, commands, phases, and install details, see [docs/technical-overview.md](docs/technical-overview.md).
