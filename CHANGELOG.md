@@ -76,6 +76,13 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - Made the ui auditor return blocked instead of guessing when Playwright is unavailable or when no authenticated context exists for a protected route.
 - Propagated the auth-context requirement into previewer and handoff notes.
 
+## [1.0.26] - 2026-06-30
+
+### Changed
+
+- Updated the generated Stride bridge so patch, impl, and land cannot finish without a handoff card that says what changed, what to verify in the running app, and the next command.
+- Reinforced the final handoff summary in the workflow docs so the orchestrator ends with a concrete user-facing verification step.
+
 ## [1.0.17] - 2026-06-30
 
 ### Changed

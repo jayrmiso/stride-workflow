@@ -15,6 +15,7 @@ Responsibilities:
 - Record the command, port, URL, process/session, worktree, branch, and a short change summary in `.stride/runs/current.md`.
 - Include the concrete manual-check items the user should verify next.
 - If the target screen is auth-gated, record the authenticated Playwright context or login bootstrap needed by the ui auditor.
+- The orchestrator should use the preview URL from the active worktree as the final run context before handoff.
 - Do not shift live render verification into the main chat; if the preview cannot be started from the active worktree, return a blocking workflow issue.
 
 The user manually judges whether the AI output is correct. The previewer only makes sure they are testing the right checkout.

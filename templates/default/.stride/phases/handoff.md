@@ -15,6 +15,7 @@ Record the active worktree path, branch, worker mode, builder result, reviewer r
 Make the manual-test section concrete: summarize the visible change, tell the user what screen or route to open, and list the specific things to inspect.
 If the worker flow could not produce a preview URL or visual verification, return Blocked instead of inventing a main-chat fallback.
 If the route is auth-gated, include the authenticated Playwright context or bootstrap note so the ui auditor can reuse it.
+The final handoff response must always include three plain-language items: what changed, how to verify it, and what to do next.
 
 Return:
 Status: Ready for manual test | Needs code fix | Blocked | Ready to land

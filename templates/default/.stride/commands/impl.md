@@ -42,4 +42,5 @@ workers(default: stridebuilder + stridereviewer) -> worktree -> load spec -> lig
 - For user-facing work, start the preview from the active worktree and verify the URL responds.
 - Write `.stride/runs/current.md` with the manual-test URL, what changed, what to check next, passed commands, and next command.
 - Do not perform the final render check in the main chat; that belongs to the previewer and ui-auditor flow.
+- The final response must tell the user what changed, what to verify in the running app, and the next command.
 - Update `.stride/ledger.md` with durable facts.
