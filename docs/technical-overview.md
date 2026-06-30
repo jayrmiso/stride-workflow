@@ -47,7 +47,7 @@ When `init` runs against an existing Stride install, it shows a Stride changelog
 - `worktree`: isolated branch/worktree manager
 - `previewer`: manual-test server manager
 - `handoff`: manual-test guide
-- `ui-auditor`: frontend consistency mapper
+- `ui-auditor`: frontend consistency mapper and visual quality checker
 - `reference-reader`: screenshot/reference interpreter
 - `kit-designer`: component and token designer
 - `migrator`: repeated UI replacement implementer
@@ -113,6 +113,7 @@ $stride mend <issue>
   agents/
     stridebuilder.toml
     stridelead.toml
+    strideuiauditor.toml
     stridereviewer.toml
 AGENTS.md
 ```
@@ -122,6 +123,7 @@ AGENTS.md
 `.codex/agents/stridebuilder.toml` is the default editing worker used by patch and impl.
 `.codex/agents/stridereviewer.toml` is the default review worker used by patch, impl, and land to review the scoped diff without giving the worker write access.
 `.codex/agents/stridelead.toml` is optional for balance/heavy read-only recon when scope or risk needs more repo facts.
+`.codex/agents/strideuiauditor.toml` is the optional visual auditor used for user-facing or layout-sensitive work. It should inspect the live UI with Playwright when a preview URL or local route is available.
 
 ## Token Posture
 

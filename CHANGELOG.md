@@ -10,6 +10,16 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.18] - 2026-06-30
+
+### Changed
+
+- Added `strideuiauditor` as a read-only visual auditor worker for user-facing or layout-sensitive changes.
+- Wired visual changes to run the UI auditor before preview and handoff, so the workflow can catch cramped or ugly layouts before land.
+- Made `strideuiauditor` use Playwright against the live app when a preview URL or local route is available.
+- Updated the kit flow to include a final Playwright-backed visual audit pass.
+- Clarified that builder and reviewer should apply OOP, SOLID, clean architecture, and clean code principles when they help the result, without forcing unnecessary abstraction.
+
 ## [1.0.17] - 2026-06-30
 
 ### Changed
