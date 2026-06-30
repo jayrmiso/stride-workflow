@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.33] - 2026-06-30
+
+### Changed
+
+- Clarified that the UI auditor must resolve Playwright from Stride’s own installation, not from the application checkout being audited.
+- Kept app env inheritance separate from Playwright resolution so local testing can source repo env without confusing the worker’s browser toolchain.
+- Applied the same rule to the UI auditor skill, agent manifest, and phase docs so the worker boundary stays consistent after install.
+
 ## [1.0.32] - 2026-06-30
 
 ### Changed
