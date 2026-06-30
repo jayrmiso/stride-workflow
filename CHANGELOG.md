@@ -83,6 +83,13 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - Updated the generated Stride bridge so patch, impl, and land cannot finish without a handoff card that says what changed, what to verify in the running app, and the next command.
 - Reinforced the final handoff summary in the workflow docs so the orchestrator ends with a concrete user-facing verification step.
 
+## [1.0.27] - 2026-06-30
+
+### Changed
+
+- Clarified that the main chat is the brain, not the hands, and that multiple builders are preferred when that keeps the orchestrator out of the write path.
+- Reinforced the token-aware worker guidance so split scopes should use more than one builder or reviewer instead of letting the orchestrator edit files.
+
 ## [1.0.17] - 2026-06-30
 
 ### Changed
