@@ -28,6 +28,16 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - Tightened the preview and handoff flow so the run record must include what changed and what the user should manually verify next.
 - Clarified the previewer and handoff phases so user-facing work records the live route, change summary, and concrete manual-check items.
 
+## [1.0.20] - 2026-06-30
+
+### Added
+
+- Added `stride-workflow refresh` to remove managed Stride files first and reinstall the current release cleanly.
+
+### Changed
+
+- Updated the installer docs so refresh is the explicit clean reinstall path while `init` remains the normal update path.
+
 ## [1.0.17] - 2026-06-30
 
 ### Changed

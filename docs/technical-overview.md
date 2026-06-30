@@ -22,6 +22,7 @@ CLI commands:
 
 ```bash
 stride-workflow init [path] [--force] [--no-codex] [--yes]
+stride-workflow refresh [path] [--no-codex] [--yes]
 stride-workflow command <patch|spec|impl|land|kit|review|mend|status|workers>
 stride-workflow <patch|spec|impl|land|kit|review|mend|status|workers>
 stride-workflow worktree <create|status|assert|cleanup> [slug-or-path]
@@ -33,6 +34,7 @@ stride-workflow version
 ```
 
 When `init` runs against an existing Stride install, it shows a Stride changelog summary for newer versions before asking to update.
+Use `refresh` when you want to remove the managed Stride files first and reinstall the current release cleanly.
 
 ## Internal Phases
 

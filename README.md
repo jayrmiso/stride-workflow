@@ -14,6 +14,12 @@ For the technical workflow, commands, phases, and install details, see [docs/tec
 npx github:jayrmiso/stride-workflow init
 ```
 
+For a clean reinstall that removes and reapplies the managed Stride files, use:
+
+```bash
+stride-workflow refresh
+```
+
 ## License
 
 MIT

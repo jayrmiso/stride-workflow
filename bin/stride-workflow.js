@@ -15,6 +15,7 @@ const agentsBridgeStart = "<!-- stride-workflow:start -->";
 const agentsBridgeEnd = "<!-- stride-workflow:end -->";
 
 const commandNames = ["patch", "spec", "impl", "land", "kit", "review", "mend", "status", "workers"];
+const managedInstallRoots = [".stride", ".agents", ".codex"];
 const staleManagedPaths = [
   ".agents/skills/stride-touch",
   ".agents/skills/stride-frame",
@@ -92,6 +93,7 @@ function usage() {
 
 Usage:
   stride-workflow init [path] [--force] [--no-codex] [--yes]
+  stride-workflow refresh [path] [--no-codex] [--yes]
   stride-workflow command <patch|spec|impl|land|kit|review|mend|status|workers>
   stride-workflow <patch|spec|impl|land|kit|review|mend|status|workers>
   stride-workflow worktree <create|status|assert|cleanup> [slug-or-path]
@@ -104,6 +106,7 @@ Usage:
 
 Commands:
   init     Install or refresh .stride workflow files in a project.
+  refresh  Remove managed Stride files and reinstall the current release.
   command  Print the instructions for one Stride Workflow command.
   worktree Create, inspect, assert, or clean up the active Stride worktree.
   workers  Print the worker policy for token-aware execution.
@@ -187,6 +190,49 @@ function applyDirChanges(changes, options) {
     fs.writeFileSync(change.destPath, fs.readFileSync(change.srcPath));
     console.log(`${change.action} ${change.relPath}`);
   }
+}
+
+function collectTemplateFiles(srcDir, relBase = "") {
+  const files = [];
+
+  for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+    const srcPath = path.join(srcDir, entry.name);
+    const relPath = path.join(relBase, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...collectTemplateFiles(srcPath, relPath));
+    } else {
+      files.push(relPath);
+    }
+  }
+
+  return files;
+}
+
+function collectManagedResetChanges(projectDir, includeCodex) {
+  const changes = [];
+  for (const root of managedInstallRoots) {
+    if (root === ".codex" && !includeCodex) continue;
+    if (root === ".agents" || root === ".codex") {
+      const target = path.join(projectDir, root);
+      if (fs.existsSync(target)) {
+        changes.push({ action: "delete", relPath: root, target });
+      }
+      continue;
+    }
+
+    const templateRoot = path.join(templateDir, root);
+    const rootFiles = collectTemplateFiles(templateRoot).map((relPath) => path.join(root, relPath));
+
+    for (const relPath of rootFiles) {
+      const target = path.join(projectDir, relPath);
+      if (fs.existsSync(target)) {
+        changes.push({ action: "delete", relPath, target });
+      }
+    }
+  }
+
+  return changes;
 }
 
 function collectStaleManagedChanges(projectDir) {
@@ -500,6 +546,7 @@ async function confirmUpdate(projectDir, summary) {
 async function initProject(args) {
   const force = args.includes("--force");
   const noCodex = args.includes("--no-codex");
+  const reinstall = args.includes("--reinstall");
   const yes = args.includes("--yes");
   const cleanArgs = args.filter((arg) => !arg.startsWith("--"));
   const projectDir = path.resolve(cleanArgs[0] ?? process.cwd());
@@ -510,30 +557,34 @@ async function initProject(args) {
 
   const existingStride = hasExistingStride(projectDir);
   const installedVersion = readInstalledStrideVersion(projectDir);
+  const managedDeletes = reinstall ? collectManagedResetChanges(projectDir, !noCodex) : [];
   const strideChanges = collectDirChanges(path.join(templateDir, ".stride"), path.join(projectDir, ".stride"), {
     cwd: projectDir,
-    force,
+    force: force || reinstall,
   });
   const agentChanges = noCodex
     ? []
     : collectDirChanges(path.join(templateDir, ".agents"), path.join(projectDir, ".agents"), {
         cwd: projectDir,
-        force,
+        force: force || reinstall,
   });
   const codexChanges = noCodex
     ? []
     : collectDirChanges(path.join(templateDir, ".codex"), path.join(projectDir, ".codex"), {
         cwd: projectDir,
-        force,
+        force: force || reinstall,
       });
   const staleChanges = collectStaleManagedChanges(projectDir);
   const bridgeChange = noCodex ? null : collectCodexBridgeChange(projectDir);
-  const changes = [...strideChanges, ...agentChanges, ...codexChanges, ...staleChanges, ...(bridgeChange ? [bridgeChange] : [])];
+  const changes = [...managedDeletes, ...strideChanges, ...agentChanges, ...codexChanges, ...staleChanges, ...(bridgeChange ? [bridgeChange] : [])];
   const needsVersionUpdate = installedVersion !== packageJson.version;
-  const shouldPrompt = existingStride && (changes.length > 0 || needsVersionUpdate) && !yes && !force;
+  const shouldPrompt = existingStride && (changes.length > 0 || needsVersionUpdate || reinstall) && !yes && !force;
 
   if (shouldPrompt) {
-    const shouldUpdate = await confirmUpdate(projectDir, summarizeStrideUpdates(installedVersion));
+    const summary = reinstall
+      ? `${summarizeStrideUpdates(installedVersion)}\nThis will remove and reinstall the managed Stride files before writing the current release.\n`
+      : summarizeStrideUpdates(installedVersion);
+    const shouldUpdate = await confirmUpdate(projectDir, summary);
     if (!shouldUpdate) {
       console.log("Skipped updating existing Stride install.");
       return;
@@ -541,22 +592,23 @@ async function initProject(args) {
   }
 
   ensureDir(projectDir);
+  applyStaleManagedChanges(managedDeletes);
   applyStaleManagedChanges(staleChanges);
   ensureDir(path.join(projectDir, ".stride"));
   applyDirChanges(strideChanges, {
     cwd: projectDir,
-    force,
+    force: force || reinstall,
   });
   if (!noCodex) {
     ensureDir(path.join(projectDir, ".agents"));
     applyDirChanges(agentChanges, {
       cwd: projectDir,
-      force,
+      force: force || reinstall,
     });
     ensureDir(path.join(projectDir, ".codex"));
     applyDirChanges(codexChanges, {
       cwd: projectDir,
-      force,
+      force: force || reinstall,
     });
 
     if (bridgeChange) {
@@ -568,6 +620,10 @@ async function initProject(args) {
 
   console.log("");
   console.log(`Stride Workflow initialized in ${projectDir}`);
+}
+
+async function refreshProject(args) {
+  await initProject([...args, "--reinstall"]);
 }
 
 function printCommand(args) {
@@ -887,6 +943,9 @@ async function main() {
   switch (command) {
     case "init":
       await initProject(args);
+      break;
+    case "refresh":
+      await refreshProject(args);
       break;
     case "command":
       printCommand(args);
