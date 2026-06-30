@@ -31,6 +31,7 @@ stride-workflow refresh
 ```
 
 `stride-workflow doctor` also checks that the bundled Playwright runtime and Chromium browser binary are available for visual auditing.
+The package install downloads the Chromium browser automatically through Playwright so the visual-audit path is ready after install.
 `stride-workflow init` prints a Playwright readiness line after install so you can confirm the visual-audit path immediately.
 
 ## License

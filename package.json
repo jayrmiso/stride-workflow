@@ -1,6 +1,6 @@
 {
   "name": "stride-workflow",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "Spec-and-impl workflow scaffolding for Codex-first repo work.",
   "type": "module",
   "bin": {
@@ -15,6 +15,7 @@
     "LICENSE"
   ],
   "scripts": {
+    "postinstall": "npx playwright install chromium",
     "check": "node --check bin/stride-workflow.js",
     "smoke": "node bin/stride-workflow.js --help && node bin/stride-workflow.js version && node bin/stride-workflow.js command kit"
   },

@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.31] - 2026-06-30
+
+### Changed
+
+- Restored the bundled Chromium browser requirement for the UI auditor so the workflow stays on a single browser path instead of switching to system Chrome.
+- Added a package `postinstall` step that installs Chromium automatically through Playwright, which keeps the visual-audit path ready after `npm install` without requiring manual browser setup.
+- Removed the explicit browser-install steps from the GitHub validate and publish workflows because the package install now handles the Chromium download.
+
 ## [1.0.30] - 2026-06-30
 
 ### Changed
