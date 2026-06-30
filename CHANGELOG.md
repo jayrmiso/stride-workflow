@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.40] - 2026-06-30
+
+### Changed
+
+- Added `touch` as a first-class fast path for tiny local changes.
+- Made `touch` default to direct edit instead of the full builder/reviewer path for non-UI tweaks.
+- Exposed `touch` in the CLI router, install bundle, and command docs so new installs can use it consistently.
+
 ## [1.0.39] - 2026-06-30
 
 ### Changed

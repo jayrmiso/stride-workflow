@@ -2,7 +2,7 @@
 
 Purpose: guide Codex through adaptive repo work with enough structure to stay reliable and enough restraint to avoid unnecessary ceremony.
 
-Primary commands: `$stride frame`, `$stride carry`, and `$stride land`
+Primary commands: `$stride touch`, `$stride frame`, `$stride carry`, and `$stride land`
 
 ## Operating Rules
 
@@ -22,11 +22,13 @@ Use `$stride touch <small change>` when:
 - the user asks for a tiny local change
 - a full frame would cost more than it helps
 - the likely blast radius is obvious after a quick probe
+- the change is non-UI or does not need a live preview
+- you want the fastest safe path for a one-off tweak
 
 Internal phases:
 
 - quick probe
-- builder
+- direct edit
 - checker if useful
 - previewer if user-facing
 - handoff

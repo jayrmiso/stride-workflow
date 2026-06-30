@@ -16,7 +16,7 @@ const requireFromHere = createRequire(import.meta.url);
 const agentsBridgeStart = "<!-- stride-workflow:start -->";
 const agentsBridgeEnd = "<!-- stride-workflow:end -->";
 
-const commandNames = ["patch", "spec", "impl", "land", "kit", "review", "mend", "status", "workers"];
+const commandNames = ["touch", "patch", "spec", "impl", "land", "kit", "review", "mend", "status", "workers"];
 const managedInstallRoots = [".stride", ".agents", ".codex"];
 const staleManagedPaths = [
   ".agents/skills/stride-touch",
@@ -41,6 +41,7 @@ const requiredPaths = [
   ".stride/ledger.md",
   ".stride/version.txt",
   ".stride/bin/stride-workflow.mjs",
+  ".stride/commands/touch.md",
   ".codex/agents/stridebuilder.toml",
   ".codex/agents/stridelead.toml",
   ".codex/agents/strideuiauditor.toml",
@@ -96,8 +97,8 @@ function usage() {
 Usage:
   stride-workflow init [path] [--force] [--no-codex] [--yes]
   stride-workflow refresh [path] [--no-codex] [--yes]
-  stride-workflow command <patch|spec|impl|land|kit|review|mend|status|workers>
-  stride-workflow <patch|spec|impl|land|kit|review|mend|status|workers>
+  stride-workflow command <touch|patch|spec|impl|land|kit|review|mend|status|workers>
+  stride-workflow <touch|patch|spec|impl|land|kit|review|mend|status|workers>
   stride-workflow worktree <create|status|assert|cleanup> [slug-or-path]
   stride-workflow workers [path]
   stride-workflow subject [path]
@@ -504,6 +505,7 @@ function buildCodexBridge() {
     "- Use .stride/ledger.md for durable project facts.",
     "- Update the ledger when a discovery should survive future turns.",
     "- Do not finish patch, impl, or land without a handoff card that says, in first person, that the changes are done, what changed, that the app was started from the active worktree, what to verify in the running app, and the next command.",
+    "- Tiny local changes can use $stride touch and should avoid the full worker/preview path unless the scope grows.",
     "",
     "Primary loop: $stride spec -> approval -> $stride impl -> ui audit if visual -> manual test -> $stride land.",
     "Small no-spec changes can use $stride patch.",
@@ -1006,6 +1008,7 @@ async function main() {
       version();
       break;
     case "patch":
+    case "touch":
     case "spec":
     case "impl":
     case "land":
