@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.30] - 2026-06-30
+
+### Changed
+
+- Added an explicit milestone checklist to the public workflow docs so the active run can show a simple `Task` flow instead of hiding progress inside prose.
+- Clarified that the checklist is dynamic and mirrors the current run phases, such as `spec`, `impl`, `review`, `preview`, and `land`, rather than using fixed example steps.
+- Updated the README, technical overview, handoff guidance, status guidance, and flow diagram to surface the milestone checklist consistently.
+
 ## [1.0.29] - 2026-06-30
 
 ### Changed

@@ -4,6 +4,16 @@ Stride Workflow is a Codex-first workflow tool for keeping repo work specified, 
 
 Default worker split: `stridebuilder` writes, `stridereviewer` reviews, `stridelead` is read-only recon when extra repo facts are worth it, and `strideuiauditor` checks the live UI with bundled Playwright when the change is user-facing.
 
+Work shows up as a simple milestone checklist that mirrors the current run:
+
+```text
+Task:
+- [ ] <current milestone 1>
+- [ ] <current milestone 2>
+```
+
+For a feature run, that checklist usually tracks phases such as `spec`, `impl`, `review`, `preview`, and `land`. Completed items stay visible but are marked done instead of being removed.
+
 ![Stride Workflow diagram](docs/stride-flow.svg)
 
 For the technical workflow, commands, phases, and install details, see [docs/technical-overview.md](docs/technical-overview.md).

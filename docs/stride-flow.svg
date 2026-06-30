@@ -1,6 +1,6 @@
 <svg width="1120" height="650" viewBox="0 0 1120 650" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Stride Workflow flow diagram</title>
-  <desc id="desc">Stride Workflow starts with patch for tiny changes or spec for larger work, then implements changes through a worktree, builder worker, checks, reviewer worker, preview, manual testing, mend if needed, and land when approved.</desc>
+  <desc id="desc">Stride Workflow starts with patch for tiny changes or spec for larger work, then implements changes through a worktree, builder worker, checks, reviewer worker, preview, manual testing, mend if needed, and land when approved. Current work is also surfaced as a milestone checklist that tracks the active phases.</desc>
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#14213D" flood-opacity="0.12"/>
@@ -16,6 +16,7 @@
 
   <text x="64" y="74" fill="#17212B" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="36" font-weight="800">Stride Workflow</text>
   <text x="64" y="108" fill="#516173" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="17">Spec the work, build in an isolated checkout, review it, then land only after manual approval.</text>
+  <text x="64" y="131" fill="#516173" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16">Milestones stay visible as a checklist for the active phases, instead of disappearing when a step is done.</text>
 
   <g filter="url(#shadow)">
     <rect x="64" y="164" width="168" height="82" rx="14" fill="#FFFFFF"/>

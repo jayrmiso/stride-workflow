@@ -39,6 +39,18 @@ Use `refresh` when you want to remove the managed Stride files first and reinsta
 `stride-workflow init` prints a Playwright readiness line after install so users can confirm the visual-audit path immediately.
 If the target route is auth-gated, the previewer must preserve an authenticated Playwright context or the visual audit is blocked.
 
+## Task Flow
+
+Stride surfaces work as a short milestone checklist so progress stays obvious:
+
+```text
+Task:
+- [ ] <current milestone 1>
+- [ ] <current milestone 2>
+```
+
+For feature work, the current milestones usually track phases such as `spec`, `impl`, `review`, `preview`, and `land`. For a smaller patch, the checklist can shrink to the relevant subset. When a milestone finishes, mark it as done in the run record and de-emphasize it visually instead of replacing the whole flow with a new phrase. That keeps the current task readable at a glance while still showing what remains.
+
 ## Internal Phases
 
 - `intake`: request interpreter
