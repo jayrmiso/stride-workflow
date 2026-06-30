@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.39] - 2026-06-30
+
+### Changed
+
+- Tightened the handoff copy so the orchestrator must speak in first person: "I'm done with the changes", "Here are the updates", and "I'm running it now in the worktree."
+- Required the preview handoff to name the active worktree, the preview URL, and the exact manual check in the same direct response card.
+- Propagated the wording into the generated Codex bridge so the runtime output matches the template contract.
+
 ## [1.0.38] - 2026-06-30
 
 ### Changed
