@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.32] - 2026-06-30
+
+### Changed
+
+- Clarified that local preview and UI-audit runs can source env files from the parent checkout or repo root when the active worktree does not carry them.
+- Updated the worktree, previewer, UI auditor, and config docs so local test runs can inherit env from the surrounding repo without copying secrets into the worktree.
+- Kept the instruction focused on local testing only; this does not change how published releases package env files.
+
 ## [1.0.31] - 2026-06-30
 
 ### Changed
