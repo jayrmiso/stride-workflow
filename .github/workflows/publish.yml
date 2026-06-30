@@ -15,7 +15,9 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
 
       - name: Validate package
         run: |
@@ -63,4 +65,3 @@ jobs:
           gh release create "v$version" \
             --title "Stride Workflow v$version" \
             --notes-file release-notes.md
-

@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.28] - 2026-06-30
+
+### Changed
+
+- Tightened the runtime handoff so once a builder owns a scope, the main chat cannot resume code edits, preview tweaks, or last-mile fixes for that same scope.
+- Clarified that if a scope still needs implementation after the builder pass, the work should be handed to another builder worker instead of reclaiming the write path in the orchestrator.
+- Updated the GitHub validation and publish workflows to install dependencies on Node 24 before running the smoke and install checks, so Playwright-backed auditing is available during CI.
+
 ## [1.0.18] - 2026-06-30
 
 ### Changed
