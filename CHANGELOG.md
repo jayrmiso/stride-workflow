@@ -10,6 +10,14 @@ Stride Workflow uses GitHub releases for every published update. Each release sh
 - install command
 - upgrade notes when behavior changes
 
+## [1.0.36] - 2026-06-30
+
+### Changed
+
+- Added a literal `Open this URL:` line to the handoff template so the preview link is impossible to miss.
+- Added a matching `What to verify:` line so the user sees one direct browser instruction after the app is started from the worktree.
+- Reinforced the previewer guidance so the run record itself calls out the exact URL and manual check for the active worktree.
+
 ## [1.0.35] - 2026-06-30
 
 ### Changed

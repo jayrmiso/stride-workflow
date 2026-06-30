@@ -19,6 +19,7 @@ If the route is auth-gated, include the authenticated Playwright context or boot
 The final handoff response must always include three plain-language items: what changed, how to verify it, and what to do next.
 The final handoff response must be a direct user-facing instruction card, not a reference to internal markdown files or logs.
 It should say that the app was started from the active worktree, name the preview URL, and tell the user exactly what to test next.
+Include a literal `Open this URL:` line before the preview URL so the user can copy it quickly.
 Show the task as a short milestone checklist that mirrors the current flow:
 - `Task:`
 - `- [ ] <current milestone 1>`
@@ -35,6 +36,7 @@ Builder worker result: <result or reason it could not run>
 Reviewer worker result: <result or reason it could not run>
 Suggested commit subject: <subject>
 Preview URL: <url or none>
+Open this URL: <url or none>
 What changed:
 - <items>
 Task:
@@ -42,6 +44,8 @@ Task:
 - [ ] <current milestone 2>
 What to check manually:
 - <items>
+What to verify:
+- <one short sentence telling the user exactly what to click and confirm>
 Commands/checks that passed:
 - <items>
 Known risks or untested areas:

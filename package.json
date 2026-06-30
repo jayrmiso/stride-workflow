@@ -1,6 +1,6 @@
 {
   "name": "stride-workflow",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "description": "Spec-and-impl workflow scaffolding for Codex-first repo work.",
   "type": "module",
   "bin": {
